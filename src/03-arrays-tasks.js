@@ -454,10 +454,9 @@ function sortCitiesArray(arr) {
  *           [0,0,0,1,0],
  *           [0,0,0,0,1]]
  */
-function getIdentityMatrix(m) {
-  const idMatrix = (n) => Array.from({ length: n },
-    (_, i) => Array.from({ length: n }, (a_, j) => (i !== j ? 0 : 1)));
-  return idMatrix(m);
+function getIdentityMatrix(n) {
+  const matrix = new Array(n).fill(new Array(n).fill(0));
+  return matrix.map((arr, i) => arr.map((_, j) => (j === i ? 1 : 0)));
 }
 
 /**
