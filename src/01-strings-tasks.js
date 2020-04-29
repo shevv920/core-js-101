@@ -238,8 +238,7 @@ function encodeToRot13(str) {
   const srcArr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
   const outArr = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'.split('');
   const srcEntries = srcArr.map((a, i) => [a, outArr[i]]);
-  const outEntries = outArr.map((a, i) => [a, srcArr[i]]);
-  const map = new Map([...srcEntries, ...outEntries]);
+  const map = new Map(srcEntries);
   return str.split('').map((s) => map.get(s) || s).join('');
 }
 
