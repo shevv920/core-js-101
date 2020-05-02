@@ -19,8 +19,8 @@
  *    'Tue, 26 Jan 2016 13:48:02 GMT' => Date()
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
-function parseDataFromRfc2822(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromRfc2822(value) {
+  return new Date(value);
 }
 
 /**
@@ -34,8 +34,8 @@ function parseDataFromRfc2822(/* value */) {
  *    '2016-01-19T16:07:37+00:00'    => Date()
  *    '2016-01-19T08:07:37Z' => Date()
  */
-function parseDataFromIso8601(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromIso8601(value) {
+  return new Date(value);
 }
 
 
@@ -53,13 +53,19 @@ function parseDataFromIso8601(/* value */) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const year = date.getFullYear();
+  let isLeap = true;
+  if (year % 4 !== 0) isLeap = false;
+  else if (year % 100 !== 0) isLeap = true;
+  else if (year % 400 !== 0) isLeap = false;
+
+  return isLeap;
 }
 
 
 /**
- * Returns the string represention of the timespan between two dates.
+ * Returns the string representation of the time span between two dates.
  * The format of output string is "HH:mm:ss.sss"
  *
  * @param {date} startDate
@@ -73,8 +79,16 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  let timeSpan = endDate.valueOf() - startDate.valueOf();
+  const ms = timeSpan % 1000;
+  timeSpan = (timeSpan - ms) / 1000;
+  const secs = (timeSpan % 60).toString().padStart(2, 0);
+  timeSpan = (timeSpan - secs) / 60;
+  const mins = (timeSpan % 60).toString().padStart(2, 0);
+  timeSpan = (timeSpan - mins) / 60;
+  const hours = (timeSpan % 60).toString().padStart(2, 0);
+  return `${hours}:${mins}:${secs}.${ms.toString().padEnd(3, 0)}`;
 }
 
 
@@ -94,8 +108,13 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  const minutes = date.getUTCMinutes();
+  let hours = date.getUTCHours();
+  if (hours > 12) hours -= 12;
+  let delta = 60 * hours - 11 * minutes;
+  if (delta > 360) delta = Math.abs(delta) - 360;
+  return (0.5 * Math.abs(delta) * Math.PI) / 180;
 }
 
 
