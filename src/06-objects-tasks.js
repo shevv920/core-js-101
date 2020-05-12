@@ -8,7 +8,7 @@
 
 
 /**
- * Returns the rectagle object with width and height parameters and getArea() method
+ * Returns the rectangle object with width and height parameters and getArea() method
  *
  * @param {number} width
  * @param {number} height
@@ -20,8 +20,10 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.getArea = () => width * height;
 }
 
 
@@ -35,8 +37,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 
@@ -51,8 +53,9 @@ function getJSON(/* obj */) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const res = JSON.parse(json, proto);
+  return Object.assign(Object.create(proto), res);
 }
 
 
@@ -111,32 +114,57 @@ function fromJSON(/* proto, json */) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    this.elem = value;
+    return this;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    this.myId = value;
+    return this;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    this.classes = this.classes ? [...this.classes, value] : [value];
+    return this;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    this.att = value;
+    return this;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    this.pseudoClasses = this.pseudoClasses ? [...this.pseudoClasses, value] : [value];
+    return this;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    this.pseudoElem = value;
+    return this;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    return `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+  },
+
+  stringify() {
+    const res = [];
+    if (this.elem) {
+      res.push(`${this.elem}`);
+    }
+    if (this.myId) res.push(`#${this.myId}`);
+    if (this.classes) res.push(...this.classes.map((c) => `.${c}`).join(''));
+    if (this.att) res.push(`[${this.att}]`);
+    if (this.pseudoClasses) res.push(...this.pseudoClasses.map((pc) => `:${pc}`));
+    if (this.pseudoElem) res.push(`::${this.pseudoElem}`);
+    this.elem = undefined;
+    this.myId = undefined;
+    this.classes = undefined;
+    this.att = undefined;
+    this.pseudoClasses = undefined;
+    this.pseudoElem = undefined;
+    return res.join('');
   },
 };
 
